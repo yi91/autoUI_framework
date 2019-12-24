@@ -6,13 +6,12 @@ from pageobjects.baidu_homepage import HomePage
 
 
 class GetPageTitle(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
+
+    def setUp(cls):
         browser = BrowserEngine(cls)
         cls.driver = browser.open_browser(cls)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(cls):
         cls.driver.quit()
 
     def test_get_title(self):

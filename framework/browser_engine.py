@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-import ConfigParser
+import configparser as ConfigParser
 import os.path
 from selenium import webdriver
 from framework.logger import Logger

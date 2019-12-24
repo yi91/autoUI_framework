@@ -1,8 +1,11 @@
 # coding=utf-8
 import time
+from imp import reload
+
 from selenium.common.exceptions import NoSuchElementException
 import os.path
 from framework.logger import Logger
+
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')

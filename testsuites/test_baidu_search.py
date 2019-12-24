@@ -7,8 +7,7 @@ from pageobjects.baidu_homepage import HomePage
 
 class BaiduSearch(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(cls):
         """
         测试固件的setUp()的代码，主要是测试的前提准备工作
         :return:
@@ -16,8 +15,7 @@ class BaiduSearch(unittest.TestCase):
         browse = BrowserEngine(cls)
         cls.driver = browse.open_browser(cls)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(cls):
         """
         测试结束后的操作，这里基本上都是关闭浏览器
         :return:
@@ -31,14 +29,14 @@ class BaiduSearch(unittest.TestCase):
         """
         homepage = HomePage(self.driver)
         homepage.type_search('selenium')  # 调用页面对象中的方法
-        homepage.send_submit_btn()     #调用页面对象类中的点击搜索按钮方法
+        homepage.send_submit_btn()  # 调用页面对象类中的点击搜索按钮方法
         time.sleep(2)
         homepage.get_windows_img()  # 调用基类截图方法
         try:
             assert 'selenium' in homepage.get_page_title()  # 调用页面对象继承基类中的获取页面标题方法
-            print ('Test Pass.')
+            print('Test Pass.')
         except Exception as e:
-            print ('Test Fail.', format(e))
+            print('Test Fail.', format(e))
 
     def test_search2(self):
         homepage = HomePage(self.driver)
@@ -47,6 +45,6 @@ class BaiduSearch(unittest.TestCase):
         time.sleep(2)
         homepage.get_windows_img()  # 调用基类截图方法
 
+
 if __name__ == '__main__':
     unittest.main()
-
