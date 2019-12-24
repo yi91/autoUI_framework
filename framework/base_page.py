@@ -5,7 +5,8 @@ import os.path
 from framework.logger import Logger
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')  # 如果不添加以上三行代码，xpath如果表达式包括中文，就会报错，python 2.x 默认
+sys.setdefaultencoding('utf8')
+# 如果不添加以上三行代码，xpath如果表达式包括中文，就会报错，python 2.x 默认
 # string 类型是assic类型，在xpath拆分的时候，报codec can't decode byte 0xe4 in position 17: ordinal not in range(128)
 
 # create a logger instance
