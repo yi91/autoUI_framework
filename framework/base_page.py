@@ -6,10 +6,10 @@ from selenium.common.exceptions import NoSuchElementException
 import os.path
 from framework.logger import Logger
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-# 如果不添加以上三行代码，xpath如果表达式包括中文，就会报错，python 2.x 默认
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf8')
+# 如果不添加以上三行代码，xpath表达式如果包括中文，就会报错，python 2.x 默认
 # string 类型是assic类型，在xpath拆分的时候，报codec can't decode byte 0xe4 in position 17: ordinal not in range(128)
 
 # create a logger instance
@@ -52,19 +52,19 @@ class BasePage(object):
             logger.error("Failed to quit the browser with %s" % e)
 
     # 保存图片
-    def get_windows_img(self):
+    def get_windows_img(self, desc):
         """
-        在这里我们把file_path这个参数写死，直接保存到我们项目根目录的一个文件夹.\Screenshots下
+        在这里我们把file_path这个参数写死，直接保存到我们项目根目录的一个文件夹.\screenshots下
         """
         file_path = os.path.dirname(os.path.abspath('.')) + '/screenshots/'
-        rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
-        screen_name = file_path + rq + '.png'
+        now = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
+        screen_name = file_path + now + desc + '.png'
         try:
             self.driver.get_screenshot_as_file(screen_name)
             logger.info("Had take screenshot and save to folder : /screenshots")
         except NameError as e:
             logger.error("Failed to take screenshot! %s" % e)
-            self.get_windows_img()
+            self.get_windows_img(desc)
 
     # 定位元素方法
     def find_element(self, selector):
@@ -78,7 +78,9 @@ class BasePage(object):
         """
         element = ''
         if '=>' not in selector:
+            # 支持直接id查找
             return self.driver.find_element_by_id(selector)
+
         selector_by = selector.split('=>')[0]
         selector_value = selector.split('=>')[1]
 
@@ -89,7 +91,8 @@ class BasePage(object):
                             "by %s via value: %s " % (element.text, selector_by, selector_value))
             except NoSuchElementException as e:
                 logger.error("NoSuchElementException: %s" % e)
-                self.get_windows_img()   # take screenshot
+                # take screenshot
+                self.get_windows_img('find_element_err')
         elif selector_by == "n" or selector_by == 'name':
             element = self.driver.find_element_by_name(selector_value)
         elif selector_by == "c" or selector_by == 'class_name':
@@ -104,10 +107,10 @@ class BasePage(object):
             try:
                 element = self.driver.find_element_by_xpath(selector_value)
                 logger.info("Had find the element \' %s \' successful "
-                                "by %s via value: %s " % (element.text, selector_by, selector_value))
+                            "by %s via value: %s " % (element.text, selector_by, selector_value))
             except NoSuchElementException as e:
                 logger.error("NoSuchElementException: %s" % e)
-                self.get_windows_img()
+                self.get_windows_img('find_element_err')
         elif selector_by == "s" or selector_by == 'selector_selector':
             element = self.driver.find_element_by_css_selector(selector_value)
         else:
@@ -119,13 +122,14 @@ class BasePage(object):
     def type(self, selector, text):
 
         el = self.find_element(selector)
+        # 多态，看el对象是谁就调用谁的clear()
         el.clear()
         try:
             el.send_keys(text)
             logger.info("Had type \' %s \' in inputBox" % text)
         except NameError as e:
             logger.error("Failed to type in input box with %s" % e)
-            self.get_windows_img()
+            self.get_windows_img('type_err')
 
     # 清除文本框
     def clear(self, selector):
@@ -136,7 +140,7 @@ class BasePage(object):
             logger.info("Clear text in input box before typing.")
         except NameError as e:
             logger.error("Failed to clear in input box with %s" % e)
-            self.get_windows_img()
+            self.get_windows_img('clear_err')
 
     # 点击元素
     def click(self, selector):

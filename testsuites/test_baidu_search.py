@@ -31,7 +31,7 @@ class BaiduSearch(unittest.TestCase):
         homepage.type_search('selenium')  # 调用页面对象中的方法
         homepage.send_submit_btn()  # 调用页面对象类中的点击搜索按钮方法
         time.sleep(2)
-        homepage.get_windows_img()  # 调用基类截图方法
+        homepage.get_windows_img('test_baidu_search')  # 调用基类截图方法
         try:
             assert 'selenium' in homepage.get_page_title()  # 调用页面对象继承基类中的获取页面标题方法
             print('Test Pass.')
@@ -43,7 +43,7 @@ class BaiduSearch(unittest.TestCase):
         homepage.type_search('python')  # 调用页面对象中的方法
         homepage.send_submit_btn()  # 调用页面对象类中的点击搜索按钮方法
         time.sleep(2)
-        homepage.get_windows_img()  # 调用基类截图方法
+        homepage.get_windows_img('test_search2')  # 调用基类截图方法
 
 
 if __name__ == '__main__':
