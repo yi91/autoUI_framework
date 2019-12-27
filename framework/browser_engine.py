@@ -3,48 +3,38 @@ import configparser as ConfigParser
 import os.path
 from selenium import webdriver
 from framework.logger import Logger
+import unittest
 
 logger = Logger(logger="BrowserEngine").getlog()
 
 
-class BrowserEngine(object):
-    dir = os.path.dirname(os.path.abspath('.'))
-    chrome_driver_path = dir + '/tools/chromedriver.exe'
-    ie_driver_path = dir + '/tools/IEDriverServer.exe'
+class BrowserEngine(unittest.TestCase):
+    """
+    定义一个引擎类，负责 setUp和tearDown 并提供driver
+    """
+    pro_dir = os.path.dirname(os.path.dirname(__file__)).replace('\\', '/')
+    chrome_driver_path = pro_dir + '/tools/chromedriver.exe'
 
-    def __init__(self, driver):
-        self.driver = driver
+    driver = webdriver.Chrome(chrome_driver_path)
+    logger.info("Starting Chrome browser.")
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        测试固件的setUp()的代码，主要是测试的前提准备工作
+        :return:
+        """
+        cls.driver.implicitly_wait(10)
+        logger.info("Set implicitly wait 10 seconds.")
+        cls.driver.maximize_window()
+        logger.info("Maximize the current window.")
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        测试结束后的操作，这里基本上都是关闭浏览器
+        :return:
+        """
+        cls.driver.quit()
 
     # read the browser type from config.ini file, return the driver
-    def open_browser(self, driver):
-        config = ConfigParser.ConfigParser()
-        # file_path = os.path.dirname(os.getcwd()) + '/config/config.ini'
-        file_path = os.path.dirname(os.path.abspath('.')) + '/config/config.ini'
-        config.read(file_path)
-
-        browser = config.get("browserType", "browserName")
-        logger.info("You had select %s browser." % browser)
-        url = config.get("testServer", "URL")
-        logger.info("The test server url is: %s" % url)
-
-        if browser == "Firefox":
-            driver = webdriver.Firefox()
-            logger.info("Starting firefox browser.")
-        elif browser == "Chrome":
-            driver = webdriver.Chrome(self.chrome_driver_path)
-            logger.info("Starting Chrome browser.")
-        elif browser == "IE":
-            driver = webdriver.Ie(self.ie_driver_path)
-            logger.info("Starting IE browser.")
-
-        driver.get(url)
-        logger.info("Open url: %s" % url)
-        driver.maximize_window()
-        logger.info("Maximize the current window.")
-        driver.implicitly_wait(10)
-        logger.info("Set implicitly wait 10 seconds.")
-        return driver
-
-    def quit_browser(self):
-        logger.info("Now, Close and quit the browser.")
-        self.driver.quit()

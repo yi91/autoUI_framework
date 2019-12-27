@@ -1,11 +1,10 @@
 # coding=utf-8
 import time
-from imp import reload
-
 from selenium.common.exceptions import NoSuchElementException
 import os.path
 from framework.logger import Logger
 
+# from imp import reload
 # import sys
 # reload(sys)
 # sys.setdefaultencoding('utf8')
@@ -18,15 +17,23 @@ logger = Logger(logger="BasePage").getlog()
 
 class BasePage(object):
     """
-    定义一个页面基类，让所有页面都继承这个类，封装一些常用的页面操作方法到这个类
+    让所有页面都继承这个页面基类，封装一些常用的页面操作方法到这个类
     """
+    def __init__(self, selenium_driver, base_url='https://www.baidu.com'):
+        self.base_url = base_url
+        self.driver = selenium_driver
 
-    def __init__(self, driver):
-        self.driver = driver
+    def open(self, url):
+        url = self.base_url + url
+        self.driver.get(url)
+        time.sleep(2)
+        logger.info("Open url: %s" % url)
+        # assert self.on_page(url), ' Did not land on %s' % url
 
     # quit browser and end testing
     def quit_browser(self):
         self.driver.quit()
+        logger.info("Now, Close and quit the browser.")
 
     # 浏览器前进操作
     def forward(self):
@@ -56,7 +63,7 @@ class BasePage(object):
         """
         在这里我们把file_path这个参数写死，直接保存到我们项目根目录的一个文件夹.\screenshots下
         """
-        file_path = os.path.dirname(os.path.abspath('.')) + '/screenshots/'
+        file_path = os.path.dirname(os.path.abspath('.')).replace('\\', '/') + '/screenshots/'
         now = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
         screen_name = file_path + now + desc + '.png'
         try:
@@ -64,7 +71,7 @@ class BasePage(object):
             logger.info("Had take screenshot and save to folder : /screenshots")
         except NameError as e:
             logger.error("Failed to take screenshot! %s" % e)
-            self.get_windows_img(desc)
+            # self.get_windows_img(desc)
 
     # 定位元素方法
     def find_element(self, selector):
@@ -133,7 +140,7 @@ class BasePage(object):
 
     # 清除文本框
     def clear(self, selector):
-
+        sleep()
         el = self.find_element(selector)
         try:
             el.clear()
@@ -144,11 +151,11 @@ class BasePage(object):
 
     # 点击元素
     def click(self, selector):
-
         el = self.find_element(selector)
+        value = el.text
         try:
             el.click()
-            logger.info("The element \' %s \' was clicked." % el.text)
+            logger.info("The element \' %s \' was clicked." % value)
         except NameError as e:
             logger.error("Failed to click the element with %s" % e)
 

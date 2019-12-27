@@ -19,10 +19,10 @@ class Logger(object):
         # 创建一个FileHandler，用于写入日志文件
         now = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
         # log_path = os.path.dirname(os.getcwd()) + '/Logs/'  # 项目根目录下/Logs 保存日志
-        log_path = os.path.dirname(os.path.abspath('.')) + '/logs/'
+        log_path = os.path.dirname(os.path.dirname(__file__)).replace('\\', '/') + '/logs/'
         # 如果case组织结构是 /testsuit/featuremodel/xxx.py ， 那么得到的相对路径的父路径就是项目根目录
         log_name = log_path + now + '.log'
-        fh = logging.FileHandler(log_name)
+        fh = logging.FileHandler(log_name, encoding='utf-8')
         fh.setLevel(logging.INFO)
 
         # 再创建一个StreamHandler，用于输出到控制台
