@@ -7,7 +7,7 @@ import unittest
 class SearchTest(unittest.TestCase):
 
     def setUp(self):
-        desired_caps = {'automationName': 'UiAutomator1',
+        desired_caps = {'automationName': 'UiAutomator2',
                         'deviceName': '127.0.0.1:21503',
                         'platformName': 'Android',
                         'platformVersion': '5.1.1',
